@@ -403,6 +403,7 @@ class Rule(Model):
     project = models.ForeignKey(Project)
     rule_id = models.CharField(max_length=64, db_index=True)
     data = GzippedDictField()
+    date_added = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = 'sentry_rule'
