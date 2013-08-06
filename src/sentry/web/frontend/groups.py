@@ -466,3 +466,29 @@ def group_plugin_action(request, team, project, group_id, slug):
         'project_id': group.project.slug
     })
     return HttpResponseRedirect(redirect)
+
+
+@has_group_access
+def site_events(request, team, project, group, event_id):
+    # event_list = group.event_set.all().order_by('-datetime')
+    event = get_object_or_404(Event, pk=event_id, project=project)
+    event_list = Event.objects.filter(group=group, site=event.site).order_by('-datetime')
+
+    return render_with_group_context(group, 'sentry/groups/event_list.html', {
+        'event_list': event_list,
+        'page': 'event_list',
+    }, request)
+
+
+@has_group_access
+def server_events(request, team, project, group, event_id):
+    # event_list = group.event_set.all().order_by('-datetime')
+    event = get_object_or_404(Event, pk=event_id, project=project)
+    event_list = Event.objects.filter(group=group, server_name=event.server_name).order_by('-datetime')
+
+    return render_with_group_context(group, 'sentry/groups/event_list.html', {
+        'event_list': event_list,
+        'page': 'event_list',
+    }, request)
+
+
