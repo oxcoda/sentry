@@ -469,26 +469,19 @@ def group_plugin_action(request, team, project, group_id, slug):
 
 
 @has_group_access
-def site_events(request, team, project, group, event_id):
-    # event_list = group.event_set.all().order_by('-datetime')
-    event = get_object_or_404(Event, pk=event_id, project=project)
-    event_list = Event.objects.filter(group=group, site=event.site).order_by('-datetime')
+def event_filter(request, team, project, group):
+    site = request.GET.get('site')
+    server = request.GET.get('server')
+
+    event_list = Event.objects.filter(group=group).order_by('-datetime')
+    if site:
+        event_list = event_list.filter(site=site)
+    if server:
+        event_list = event_list.filter(server_name=server)
 
     return render_with_group_context(group, 'sentry/groups/event_list.html', {
         'event_list': event_list,
         'page': 'event_list',
+        'site_query': site,
+        'server_query': server,
     }, request)
-
-
-@has_group_access
-def server_events(request, team, project, group, event_id):
-    # event_list = group.event_set.all().order_by('-datetime')
-    event = get_object_or_404(Event, pk=event_id, project=project)
-    event_list = Event.objects.filter(group=group, server_name=event.server_name).order_by('-datetime')
-
-    return render_with_group_context(group, 'sentry/groups/event_list.html', {
-        'event_list': event_list,
-        'page': 'event_list',
-    }, request)
-
-

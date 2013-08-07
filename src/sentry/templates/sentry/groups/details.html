@@ -120,8 +120,14 @@
     </small></p>
 
     {% if can_admin_event %}
-	{% if event %}<p><a href="{% url 'sentry-site-events' group.team.slug group.project.slug group.id event.id %}">All events in this group for this site</a></p>{% endif %}
-	{% if event %}<p><a href="{% url 'sentry-server-events' group.team.slug group.project.slug group.id event.id %}">All events in this group for this server</a></p>{% endif %}
+        <form action="{% url 'sentry-event-filter' group.team.slug group.project.slug group.id %}">
+            <input type="hidden" name="server" value="{% if server_query %}{{ server_query }}{% endif %}"/>
+            <input type="text" name="site" value="{% if site_query %}{{ site_query }}{% endif %}" placeholder="{% if HAS_SEARCH %}{% trans "Filter by site" %}{% else %}{% trans "Message id" %}{% endif %}" class="search-query pull-left" />
+        </form>
+        <form action="{% url 'sentry-event-filter' group.team.slug group.project.slug group.id %}">
+            <input type="hidden" name="site" value="{% if site_query %}{{ site_query }}{% endif %}"/>
+            <input type="text" name="server" value="{% if server_query %}{{ server_query }}{% endif %}" placeholder="{% if HAS_SEARCH %}{% trans "Filter by server" %}{% else %}{% trans "Message id" %}{% endif %}" class="search-query pull-left" />
+        </form>
         <ul class="nav nav-list">
             <li class="nav-header">{% trans "Actions" %}</li>
             {% for label, link, is_active in group|get_actions:request %}
