@@ -318,7 +318,7 @@ def render_tag_widget(group, tag):
     return {
         'title': tag.replace('_', ' ').title(),
         'tag_name': tag,
-        'unique_tags': list(group.get_unique_tags(tag)[:10]),
+        'unique_tags': list(group.get_unique_tags(tag)),
         'group': group,
     }
 
