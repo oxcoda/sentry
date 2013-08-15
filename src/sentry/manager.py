@@ -465,13 +465,12 @@ class GroupManager(BaseManager, ChartMixin):
 
         event.group = group
 
-        # save the event unless its been sampled
-        if not is_sample:
-            try:
-                event.save()
-            except IntegrityError:
-                transaction.rollback_unless_managed(using=group._state.db)
-                return event
+        # Always save the event
+        try:
+            event.save()
+        except IntegrityError:
+            transaction.rollback_unless_managed(using=group._state.db)
+            return event
 
         transaction.commit_unless_managed(using=group._state.db)
 
